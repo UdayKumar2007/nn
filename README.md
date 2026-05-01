@@ -27,3 +27,35 @@ git clone https://github.com/UdayKumar2007/idhi.git
 for read all records-------------------
 
 git log
+
+
+-----------------------------------------------
+
+# Create project folder
+mkdir docker-webpage && cd docker-webpage
+
+# Create index.html
+echo '<!DOCTYPE html>
+<html>
+<head>
+<title>Hello, World!</title>
+</head>
+<body>
+<h1>Hello, World!</h1>
+</body>
+</html>' > index.html
+
+# Create Dockerfile
+echo 'FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80' > Dockerfile
+
+# Build image
+docker build -t my-html-app .
+
+# Run container
+docker run -d -p 8080:80 my-html-app
+
+
+-----------------------------------------------------
+
