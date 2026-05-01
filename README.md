@@ -59,3 +59,72 @@ docker run -d -p 8080:80 my-html-app
 
 -----------------------------------------------------
 
+# Create project folder
+mkdir alpine-nano && cd alpine-nano
+
+# Create Dockerfile
+echo 'FROM alpine:latest
+RUN apk add --no-cache nano
+CMD ["/bin/sh"]' > Dockerfile
+
+# Build image
+docker build -t alpine-nano .
+
+# Run container
+docker run -it --name nano-container alpine-nano
+
+# Inside container run:
+nano --version
+nano testfile.txt
+# (Type something → Ctrl+X → Y → Enter)
+cat testfile.txt
+exit
+
+# Cleanup (optional)
+docker rm nano-container
+docker rmi alpine-nano
+
+---------------------------------------------------
+
+# Pull MySQL image
+docker pull mysql:latest
+
+# Run container
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root -d mysql:latest
+
+# Access MySQL
+docker exec -it mysql-container mysql -uroot -proot
+
+# Run inside MySQL:
+CREATE DATABASE student_db;
+USE student_db;
+CREATE TABLE students (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50),
+age INT
+);
+INSERT INTO students (name, age) VALUES ('John Doe', 22);
+SELECT * FROM students;
+EXIT;
+
+# Stop and remove
+docker stop mysql-container
+docker rm mysql-container
+docker rmi mysql:latest
+
+------------------------------------
+
+# Create network
+docker network create mynetwork
+
+# Run MySQL container
+docker run --name mysql-container --network mynetwork \
+-e MYSQL_ROOT_PASSWORD=root \
+-e MYSQL_DATABASE=mydb \
+-d mysql:latest
+
+# Run phpMyAdmin container
+docker run --name phpmyadmin-container --network mynetwork \
+-d -e PMA_HOST=mysql-container \
+-p 8080:80 phpmyadmin/phpmyadmin
+
